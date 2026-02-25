@@ -589,7 +589,7 @@ def page_crop_prediction(model_data):
                     plot_bgcolor='rgba(0,0,0,0)', paper_bgcolor='rgba(0,0,0,0)',
                     font=dict(color='#94a3b8')
                 )
-                st.plotly_chart(fig, use_container_width=True)
+                st.plotly_chart(fig, use_container_width=True, key="prediction_confidence_chart", config={'responsive': True, 'displayModeBar': False})
 
                 # Comparison with optimal
                 if predicted_crop in CROP_REQUIREMENTS:
@@ -601,7 +601,7 @@ def page_crop_prediction(model_data):
                         'Optimal Min': [req['N'][0], req['P'][0], req['K'][0]],
                         'Optimal Max': [req['N'][1], req['P'][1], req['K'][1]],
                     })
-                    st.dataframe(comp, use_container_width=True, hide_index=True)
+                    st.dataframe(comp, use_container_width=True, hide_index=True, key="soil_optimal_comp_df")
         else:
             st.info("👆 Enter your soil NPK values and click **Analyze & Recommend** to get started.")
 
@@ -630,7 +630,7 @@ def page_npk_additions(model_data):
                 'Min': [req['N'][0], req['P'][0], req['K'][0]],
                 'Max': [req['N'][1], req['P'][1], req['K'][1]],
                 'Midpoint': [mid_n, mid_p, mid_k]
-            }), use_container_width=True, hide_index=True)
+            }), use_container_width=True, hide_index=True, key="crop_req_lookup_df")
 
         with st.form("add_form"):
             target_crop = st.selectbox("Target crop:", model_data.get('target_names', []))
@@ -698,7 +698,7 @@ def page_npk_additions(model_data):
                         '⬆️ Excess' if diffs['K'] < -5 else ('✅ OK' if diffs['K'] <= 10 else '⬇️ Low'),
                     ]
                 })
-                st.dataframe(table, use_container_width=True, hide_index=True)
+                st.dataframe(table, use_container_width=True, hide_index=True, key="npk_additions_table")
 
                 # If any nutrient is in excess, suggest a better-suited crop
                 has_excess = any(d < -5 for d in diffs.values())
@@ -823,7 +823,7 @@ def page_crop_rotation():
             'K Impact': f"{s['k_impact']:+d}",
             'Score': s['score'],
         } for i, s in enumerate(suggestions)])
-        st.dataframe(rank_df, use_container_width=True, hide_index=True)
+        st.dataframe(rank_df, use_container_width=True, hide_index=True, key="rotation_full_ranking_df")
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -969,7 +969,7 @@ def page_seasonal_calendar():
         for sn, si in CROP_SEASONS.items():
             row[sn] = "✅" if crop in si['crops'] else "—"
         matrix_data.append(row)
-    st.dataframe(pd.DataFrame(matrix_data), use_container_width=True, hide_index=True)
+    st.dataframe(pd.DataFrame(matrix_data), use_container_width=True, hide_index=True, key="seasonal_matrix_df")
 
     # Seasonal recommendations
     st.markdown("")
@@ -1066,7 +1066,7 @@ def page_npk_history():
                 display_df['Predicted Crop'] = hist_df['crop']
             if 'note' in hist_df.columns:
                 display_df['Note'] = hist_df['note']
-            st.dataframe(display_df, use_container_width=True, hide_index=True)
+            st.dataframe(display_df, use_container_width=True, hide_index=True, key="npk_history_table")
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
