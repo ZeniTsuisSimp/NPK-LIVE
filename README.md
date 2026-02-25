@@ -13,10 +13,8 @@ license: mit
 # 🌾 NPK Crop Intelligence — MLOps Edition
 
 [![CI Pipeline](https://github.com/ZeniTsuisSimp/NPK-LIVE/actions/workflows/ci.yml/badge.svg)](https://github.com/ZeniTsuisSimp/NPK-LIVE/actions/workflows/ci.yml)
-[![CD Pipeline](https://github.com/ZeniTsuisSimp/NPK-LIVE/actions/workflows/cd.yml/badge.svg)](https://github.com/ZeniTsuisSimp/NPK-LIVE/actions/workflows/cd.yml)
 [![Hugging Face Spaces](https://img.shields.io/badge/🤗%20Hugging%20Face-Spaces-blue)](https://huggingface.co/spaces/ZeniTsuisSimp/npk-crop-recommendation)
 ![Python 3.11](https://img.shields.io/badge/python-3.11-blue.svg)
-![Docker](https://img.shields.io/badge/docker-ready-blue.svg)
 ![MLflow](https://img.shields.io/badge/MLflow-tracked-orange.svg)
 ![DVC](https://img.shields.io/badge/DVC-versioned-purple.svg)
 
@@ -143,15 +141,9 @@ pytest tests/ -v
 3. **Train** — Full preprocessing → training → evaluation
 4. **Verify** — Model and metrics artifacts exist
 
-### CD (on push to main)
-1. CI passes
-2. Build Docker image
-3. Push to Docker Hub
-4. Streamlit Cloud auto-deploys
-
 ### GitHub Secrets Required
-- `DOCKER_USERNAME` — Docker Hub username
-- `DOCKER_PASSWORD` — Docker Hub access token
+- `HF_USERNAME` — Hugging Face username
+- `HF_TOKEN` — Hugging Face Write Token
 
 ## 📊 App Features
 
