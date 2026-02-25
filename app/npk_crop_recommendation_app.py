@@ -895,7 +895,7 @@ def page_soil_health():
                 font=dict(color='#94a3b8'),
                 margin=dict(t=30, b=30)
             )
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, use_container_width=True, key="soil_health_radar_chart", config={'responsive': True, 'displayModeBar': False})
 
             # Interpretation
             st.markdown("##### 📝 Interpretation")
@@ -1058,7 +1058,7 @@ def page_npk_history():
                 font=dict(color='#94a3b8'),
                 legend=dict(orientation='h', y=1.15)
             )
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, use_container_width=True, key="npk_trend_chart", config={'responsive': True, 'displayModeBar': False})
 
             # History table
             display_df = hist_df[['Reading', 'time', 'N', 'P', 'K']].copy()
