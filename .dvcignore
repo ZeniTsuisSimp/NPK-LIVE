@@ -1,0 +1,10 @@
+# DVC Ignore
+# Add patterns of files DVC should ignore
+
+# IDE files
+.vscode/
+.idea/
+
+# Python cache
+__pycache__/
+*.pyc

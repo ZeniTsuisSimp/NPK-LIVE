@@ -1,0 +1,34 @@
+stages:
+  preprocess:
+    cmd: python -m src.data_preprocessing
+    deps:
+      - src/data_preprocessing.py
+      - data/Crop_recommendation.csv
+    params:
+      - data.test_size
+      - data.random_state
+    outs:
+      - data/processed
+
+  train:
+    cmd: python -m src.train
+    deps:
+      - src/train.py
+      - data/processed
+    params:
+      - model
+    outs:
+      - models/npk_crop_model.pkl
+    metrics:
+      - reports/metrics.json:
+          cache: false
+
+  evaluate:
+    cmd: python -m src.evaluate
+    deps:
+      - src/evaluate.py
+      - models/npk_crop_model.pkl
+      - data/processed
+    metrics:
+      - reports/metrics.json:
+          cache: false

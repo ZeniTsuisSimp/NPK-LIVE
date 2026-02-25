@@ -1,0 +1,45 @@
+# Core Machine Learning Libraries
+pandas==2.3.1
+numpy==2.3.2
+scikit-learn==1.7.1
+joblib==1.5.1
+scipy==1.16.0
+
+# Data Visualization
+matplotlib==3.10.3
+seaborn==0.13.2
+plotly==6.2.0
+
+# Web Application Framework
+streamlit==1.47.1
+altair==5.5.0
+
+# Development Environment
+jupyter==1.1.1
+ipykernel==6.30.0
+notebook==7.4.4
+jupyterlab==4.4.5
+
+# Supporting Libraries
+python-dateutil==2.9.0.post0
+pytz==2025.2
+pillow==11.3.0
+requests==2.32.4
+tornado==6.5.1
+packaging==25.0
+typing-extensions==4.14.1
+
+# Streamlit Dependencies
+blinker==1.9.0
+cachetools==6.1.0
+click==8.2.1
+gitpython==3.1.45
+protobuf==6.31.1
+pyarrow==21.0.0
+tenacity==9.1.2
+toml==0.10.2
+watchdog==6.0.0
+
+# Optional: For enhanced functionality
+# flask==2.3.3  # Alternative web framework
+# dash==2.14.1  # Alternative dashboard framework
