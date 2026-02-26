@@ -1580,7 +1580,7 @@ def page_npk_history():
                 'N': h_n, 'P': h_p, 'K': h_k,
                 'note': h_note or f"Reading #{len(st.session_state.npk_history) + 1}"
             })
-            st.success("Reading added!")
+            st.rerun()
 
         if st.button("🗑️ Clear All History", use_container_width=True):
             st.session_state.npk_history = []
