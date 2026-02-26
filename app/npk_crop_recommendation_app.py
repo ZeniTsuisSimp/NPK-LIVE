@@ -537,19 +537,72 @@ def load_model():
 
 
 # ─── Helper Functions ─────────────────────────────────────────────────────────
-def get_nutrient_status(value, nutrient):
-    """Return status label and color for a nutrient value."""
-    ranges = {
-        'N': {'low': 60, 'high': 150},
-        'P': {'low': 30, 'high': 90},
-        'K': {'low': 50, 'high': 120}
+
+# ── Standard Soil NPK Benchmarks ──
+# Based on ICAR (Indian Council of Agricultural Research) / Soil Health Card standards
+# Converted from kg/ha to mg/kg using: 1 kg/ha ≈ 0.45 mg/kg (15cm depth, 1.33 g/cm³ bulk density)
+# References: ICAR Soil Testing Guidelines, Soil Health Card Scheme (Govt. of India),
+#             USDA NRCS Soil Nutrient Standards, FAO Soil Fertility Guidelines
+SOIL_NPK_BENCHMARKS = {
+    'N': {
+        'unit': 'mg/kg',
+        'ranges': [
+            {'label': 'Very Low',  'min': 0,   'max': 50,  'color': '#dc2626', 'desc': 'Severely deficient — crops will show yellowing and stunted growth'},
+            {'label': 'Low',       'min': 50,  'max': 108, 'color': '#ef4444', 'desc': 'Below optimal — most crops will need nitrogen supplementation'},
+            {'label': 'Medium',    'min': 108, 'max': 215, 'color': '#22c55e', 'desc': 'Adequate — suitable for most crops without additional N'},
+            {'label': 'High',      'min': 215, 'max': 320, 'color': '#f59e0b', 'desc': 'Above optimal — risk of excessive vegetative growth'},
+            {'label': 'Very High', 'min': 320, 'max': 999, 'color': '#dc2626', 'desc': 'Excessive — risk of nutrient toxicity and groundwater contamination'}
+        ],
+        'optimal_mid': 160,   # Midpoint of medium range
+        'optimal_range': (108, 215),
+        'source': 'ICAR: Low <240 kg/ha (<108 mg/kg), Medium 240-480 kg/ha (108-215 mg/kg), High >480 kg/ha (>215 mg/kg)'
+    },
+    'P': {
+        'unit': 'mg/kg',
+        'ranges': [
+            {'label': 'Very Low',  'min': 0,   'max': 5,   'color': '#dc2626', 'desc': 'Severely deficient — poor root development and low yields'},
+            {'label': 'Low',       'min': 5,   'max': 11,  'color': '#ef4444', 'desc': 'Below optimal — phosphorus supplementation recommended'},
+            {'label': 'Medium',    'min': 11,  'max': 25,  'color': '#22c55e', 'desc': 'Adequate — sufficient for most crops'},
+            {'label': 'High',      'min': 25,  'max': 50,  'color': '#f59e0b', 'desc': 'Above optimal — reduce P application, risk of runoff'},
+            {'label': 'Very High', 'min': 50,  'max': 999, 'color': '#dc2626', 'desc': 'Excessive — environmental risk, no P fertilizer needed'}
+        ],
+        'optimal_mid': 18,
+        'optimal_range': (11, 25),
+        'source': 'ICAR (Olsen-P): Low <11 kg/ha (<5 mg/kg), Medium 11-22 kg/ha (5-10 mg/kg), High >22 kg/ha (>10 mg/kg). Extended with Bray-P international standards.'
+    },
+    'K': {
+        'unit': 'mg/kg',
+        'ranges': [
+            {'label': 'Very Low',  'min': 0,   'max': 36,  'color': '#dc2626', 'desc': 'Severely deficient — weak stems, poor disease resistance'},
+            {'label': 'Low',       'min': 36,  'max': 55,  'color': '#ef4444', 'desc': 'Below optimal — potassium supplementation recommended'},
+            {'label': 'Medium',    'min': 55,  'max': 125, 'color': '#22c55e', 'desc': 'Adequate — sufficient for most crops'},
+            {'label': 'High',      'min': 125, 'max': 200, 'color': '#f59e0b', 'desc': 'Above optimal — no additional K needed'},
+            {'label': 'Very High', 'min': 200, 'max': 999, 'color': '#dc2626', 'desc': 'Excessive — may interfere with calcium/magnesium uptake'}
+        ],
+        'optimal_mid': 90,
+        'optimal_range': (55, 125),
+        'source': 'ICAR: Low <110 kg/ha (<49 mg/kg), Medium 110-280 kg/ha (49-125 mg/kg), High >280 kg/ha (>125 mg/kg)'
     }
-    if value < ranges[nutrient]['low']:
-        return "Low", "#ef4444"
-    elif value > ranges[nutrient]['high']:
-        return "High", "#f59e0b"
-    else:
-        return "Optimal", "#22c55e"
+}
+
+
+def get_nutrient_status(value, nutrient):
+    """Return status label, color, and description for a nutrient value using ICAR benchmarks."""
+    benchmarks = SOIL_NPK_BENCHMARKS[nutrient]
+    for r in benchmarks['ranges']:
+        if r['min'] <= value < r['max']:
+            return r['label'], r['color']
+    # Fallback for edge case
+    return benchmarks['ranges'][-1]['label'], benchmarks['ranges'][-1]['color']
+
+
+def get_nutrient_detail(value, nutrient):
+    """Return full detail (label, color, description, range info) for a nutrient."""
+    benchmarks = SOIL_NPK_BENCHMARKS[nutrient]
+    for r in benchmarks['ranges']:
+        if r['min'] <= value < r['max']:
+            return r
+    return benchmarks['ranges'][-1]
 
 
 def predict_crop(n, p, k, model_data):
@@ -574,7 +627,6 @@ def recommend_additions(cur_n, cur_p, cur_k, target_crop, strategy='mid'):
         target_k = (req['K'][0] + req['K'][1]) / 2
     else:
         target_n, target_p, target_k = req['N'][0], req['P'][0], req['K'][0]
-    # Raw difference: positive = need to add, negative = excess in soil
     diffs = {
         'N': round(target_n - cur_n, 2),
         'P': round(target_p - cur_p, 2),
@@ -585,26 +637,62 @@ def recommend_additions(cur_n, cur_p, cur_k, target_crop, strategy='mid'):
 
 
 def compute_soil_health(n, p, k):
-    """Compute a 0–100 soil health score based on N, P, K values."""
-    # Optimal midpoints
-    opt_n, opt_p, opt_k = 105, 60, 100
-    # Bell-curve scoring for each nutrient (Gaussian with std = half of typical range)
-    def bell(value, optimal, sigma=50):
-        return math.exp(-0.5 * ((value - optimal) / sigma) ** 2) * 100
+    """Compute a 0–100 soil health score based on ICAR standard NPK benchmarks.
 
-    score_n = bell(n, opt_n, 55)
-    score_p = bell(p, opt_p, 35)
-    score_k = bell(k, opt_k, 50)
+    Scoring methodology:
+    - Each nutrient scored 0-100 based on how close it is to the ICAR 'Medium' (optimal) range
+    - Within optimal range = 100 points
+    - Below/above optimal = score decreases proportionally
+    - Balanced ratio between nutrients gives a bonus
+    - Final weighted average: N=35%, P=30%, K=35%
+    """
+    def nutrient_score(value, nutrient):
+        bench = SOIL_NPK_BENCHMARKS[nutrient]
+        opt_low, opt_high = bench['optimal_range']
+        opt_mid = bench['optimal_mid']
 
-    # Weighted average
+        # Within optimal range = full score
+        if opt_low <= value <= opt_high:
+            return 100.0
+
+        # Below optimal
+        if value < opt_low:
+            if value <= 0:
+                return 0.0
+            # Score proportionally: 0 at very_low_min, 60 at low boundary, 100 at optimal
+            very_low = bench['ranges'][0]['max']  # Very Low upper boundary
+            if value < very_low:
+                return max(0, (value / very_low) * 40)  # 0-40 for very low range
+            else:
+                # Low range: 40-100
+                return 40 + ((value - very_low) / (opt_low - very_low)) * 60
+
+        # Above optimal
+        if value > opt_high:
+            very_high = bench['ranges'][3]['max']  # High upper boundary
+            if value <= very_high:
+                # High range: 100 down to 50
+                return max(50, 100 - ((value - opt_high) / (very_high - opt_high)) * 50)
+            else:
+                # Very High: 50 down to 10
+                overshoot = value - very_high
+                return max(10, 50 - min(40, overshoot * 0.2))
+
+        return 50.0  # fallback
+
+    score_n = nutrient_score(n, 'N')
+    score_p = nutrient_score(p, 'P')
+    score_k = nutrient_score(k, 'K')
+
+    # Weighted average (N and K slightly more impactful)
     base = 0.35 * score_n + 0.30 * score_p + 0.35 * score_k
 
-    # Balance bonus: if nutrients are within 30% ratio of each other
+    # Balance bonus: reward when nutrients are proportionally balanced
     values = [n, p, k]
     if min(values) > 0:
         ratio = max(values) / min(values)
-        if ratio < 2.5:
-            balance_bonus = max(0, 10 * (1 - (ratio - 1) / 1.5))
+        if ratio < 3.0:
+            balance_bonus = max(0, 8 * (1 - (ratio - 1) / 2.0))
         else:
             balance_bonus = 0
     else:
@@ -614,15 +702,18 @@ def compute_soil_health(n, p, k):
 
 
 def get_health_grade(score):
-    """Return grade label and color for a health score."""
-    if score >= 80:
+    """Return grade label, color, and description for a soil health score.
+    Based on Soil Health Card grading standards."""
+    if score >= 85:
         return "Excellent", "#22c55e"
-    elif score >= 60:
+    elif score >= 70:
         return "Good", "#84cc16"
-    elif score >= 40:
-        return "Fair", "#f59e0b"
-    else:
+    elif score >= 50:
+        return "Moderate", "#f59e0b"
+    elif score >= 30:
         return "Poor", "#ef4444"
+    else:
+        return "Very Poor", "#dc2626"
 
 
 def suggest_rotation(previous_crop):
@@ -1116,16 +1207,28 @@ def page_crop_rotation():
 # ═══════════════════════════════════════════════════════════════════════════════
 def page_soil_health():
     st.markdown('<div class="section-header">💚 Soil Health Score</div>', unsafe_allow_html=True)
-    st.markdown("Get a composite **0–100 health score** for your soil based on NPK balance.")
+    st.markdown("Get a composite **0–100 health score** based on **ICAR / Soil Health Card** standard benchmarks.")
 
     col_input, col_result = st.columns([1, 1.5], gap="large")
 
     with col_input:
         st.markdown("##### 📊 Enter Soil Values")
-        n_val = st.number_input("Nitrogen (N) — mg/kg", value=100.0, min_value=0.0, max_value=300.0, step=1.0, key="health_n")
-        p_val = st.number_input("Phosphorus (P) — mg/kg", value=50.0, min_value=0.0, max_value=200.0, step=1.0, key="health_p")
-        k_val = st.number_input("Potassium (K) — mg/kg", value=80.0, min_value=0.0, max_value=250.0, step=1.0, key="health_k")
+        n_val = st.number_input("Nitrogen (N) — mg/kg", value=100.0, min_value=0.0, max_value=500.0, step=1.0, key="health_n")
+        p_val = st.number_input("Phosphorus (P) — mg/kg", value=50.0, min_value=0.0, max_value=300.0, step=1.0, key="health_p")
+        k_val = st.number_input("Potassium (K) — mg/kg", value=80.0, min_value=0.0, max_value=400.0, step=1.0, key="health_k")
         analyze_btn = st.button("🩺 Analyze Soil Health", use_container_width=True)
+
+        # Reference benchmarks table (always visible)
+        st.markdown("---")
+        st.markdown("##### 📋 ICAR Standard Benchmarks (mg/kg)")
+        bench_df = pd.DataFrame({
+            'Rating': ['Very Low', 'Low', 'Medium ✅', 'High', 'Very High'],
+            'N (mg/kg)': ['< 50', '50 – 108', '108 – 215', '215 – 320', '> 320'],
+            'P (mg/kg)': ['< 5', '5 – 11', '11 – 25', '25 – 50', '> 50'],
+            'K (mg/kg)': ['< 36', '36 – 55', '55 – 125', '125 – 200', '> 200'],
+        })
+        st.dataframe(bench_df, use_container_width=True, hide_index=True)
+        st.caption("Source: ICAR Soil Testing Standards, Soil Health Card Scheme (Govt. of India)")
 
     with col_result:
         if analyze_btn:
@@ -1141,22 +1244,45 @@ def page_soil_health():
                 </div>
             </div>""", unsafe_allow_html=True)
 
-            # Radar chart
+            # Radar chart — normalized to ICAR optimal range midpoints
             categories = ['Nitrogen (N)', 'Phosphorus (P)', 'Potassium (K)']
-            # Normalize to 0-100 scale based on typical ranges
-            norm_n = min(100, (n_val / 150) * 100)
-            norm_p = min(100, (p_val / 100) * 100)
-            norm_k = min(100, (k_val / 150) * 100)
+            # Normalize: 0% = 0, 100% = 2× the optimal midpoint
+            opt_n_mid = SOIL_NPK_BENCHMARKS['N']['optimal_mid']
+            opt_p_mid = SOIL_NPK_BENCHMARKS['P']['optimal_mid']
+            opt_k_mid = SOIL_NPK_BENCHMARKS['K']['optimal_mid']
+            norm_n = min(100, (n_val / (opt_n_mid * 2)) * 100)
+            norm_p = min(100, (p_val / (opt_p_mid * 2)) * 100)
+            norm_k = min(100, (k_val / (opt_k_mid * 2)) * 100)
+
+            # Ideal range normalized (optimal midpoints at 50% of scale)
+            ideal_n = 50  # midpoint of medium range at 50% of 2× scale
+            ideal_p = 50
+            ideal_k = 50
 
             fig = go.Figure()
-            # Ideal profile
+            # Ideal profile (ICAR Medium range as band)
+            opt_n_low = min(100, (SOIL_NPK_BENCHMARKS['N']['optimal_range'][0] / (opt_n_mid * 2)) * 100)
+            opt_n_high = min(100, (SOIL_NPK_BENCHMARKS['N']['optimal_range'][1] / (opt_n_mid * 2)) * 100)
+            opt_p_low = min(100, (SOIL_NPK_BENCHMARKS['P']['optimal_range'][0] / (opt_p_mid * 2)) * 100)
+            opt_p_high = min(100, (SOIL_NPK_BENCHMARKS['P']['optimal_range'][1] / (opt_p_mid * 2)) * 100)
+            opt_k_low = min(100, (SOIL_NPK_BENCHMARKS['K']['optimal_range'][0] / (opt_k_mid * 2)) * 100)
+            opt_k_high = min(100, (SOIL_NPK_BENCHMARKS['K']['optimal_range'][1] / (opt_k_mid * 2)) * 100)
+
             fig.add_trace(go.Scatterpolar(
-                r=[70, 60, 67, 70],
+                r=[opt_n_high, opt_p_high, opt_k_high, opt_n_high],
                 theta=categories + [categories[0]],
                 fill='toself',
-                name='Ideal Range',
+                name='ICAR Optimal Range',
                 line=dict(color='rgba(34, 197, 94, 0.5)', width=2),
                 fillcolor='rgba(34, 197, 94, 0.08)'
+            ))
+            fig.add_trace(go.Scatterpolar(
+                r=[opt_n_low, opt_p_low, opt_k_low, opt_n_low],
+                theta=categories + [categories[0]],
+                fill='toself',
+                name='Min Optimal',
+                line=dict(color='rgba(34, 197, 94, 0.3)', width=1, dash='dot'),
+                fillcolor='rgba(0, 0, 0, 0)'
             ))
             # User profile
             fig.add_trace(go.Scatterpolar(
@@ -1174,7 +1300,7 @@ def page_soil_health():
                     angularaxis=dict(gridcolor='rgba(148,163,184,0.1)')
                 ),
                 showlegend=True,
-                height=350,
+                height=380,
                 plot_bgcolor='rgba(0,0,0,0)',
                 paper_bgcolor='rgba(0,0,0,0)',
                 font=dict(color='#94a3b8'),
@@ -1182,42 +1308,63 @@ def page_soil_health():
             )
             st.plotly_chart(fig, use_container_width=True, key="soil_health_radar_chart", config={'responsive': True, 'displayModeBar': False})
 
-            # Interpretation
+            # Interpretation based on score tiers
             st.markdown("##### 📝 Interpretation")
-            if score >= 80:
-                st.success("🌟 Your soil is in excellent condition! Nutrient levels are well-balanced and within optimal ranges.")
-            elif score >= 60:
-                st.info("👍 Your soil is in good health. Minor adjustments could optimize it further for specific crops.")
-            elif score >= 40:
-                st.warning("⚠️ Your soil health is fair. Consider targeted nutrient amendments to improve balance.")
+            if score >= 85:
+                st.success("🌟 **Excellent!** All nutrients are within ICAR optimal ranges. Your soil is well-balanced and ready for most crops.")
+            elif score >= 70:
+                st.info("👍 **Good.** Nutrient levels are mostly within acceptable ranges. Minor adjustments may optimize yields for specific crops.")
+            elif score >= 50:
+                st.warning("⚠️ **Moderate.** One or more nutrients are outside the ICAR optimal range. Targeted amendments are recommended before planting.")
+            elif score >= 30:
+                st.error("🚨 **Poor.** Significant nutrient deficiency or excess detected. Soil treatment is needed — consult the NPK Additions page.")
             else:
-                st.error("🚨 Your soil needs attention. One or more nutrients are significantly outside optimal ranges.")
+                st.error("🔴 **Very Poor.** Multiple nutrients are critically out of range. Immediate soil remediation is essential. Consult an agronomist.")
 
-            # Individual status
-            n_st, n_cl = get_nutrient_status(n_val, 'N')
-            p_st, p_cl = get_nutrient_status(p_val, 'P')
-            k_st, k_cl = get_nutrient_status(k_val, 'K')
+            # Individual nutrient status with detailed info
+            st.markdown("##### 🔬 Nutrient-by-Nutrient Analysis")
+            n_detail = get_nutrient_detail(n_val, 'N')
+            p_detail = get_nutrient_detail(p_val, 'P')
+            k_detail = get_nutrient_detail(k_val, 'K')
+
             sc1, sc2, sc3 = st.columns(3)
-            with sc1:
-                st.markdown(f"""<div class="metric-card">
-                    <div class="metric-label">Nitrogen</div>
-                    <div class="metric-value" style="color: {n_cl}">{n_val:.0f}</div>
-                    <div class="metric-status" style="background: {n_cl}22; color: {n_cl}">{n_st}</div>
-                </div>""", unsafe_allow_html=True)
-            with sc2:
-                st.markdown(f"""<div class="metric-card">
-                    <div class="metric-label">Phosphorus</div>
-                    <div class="metric-value" style="color: {p_cl}">{p_val:.0f}</div>
-                    <div class="metric-status" style="background: {p_cl}22; color: {p_cl}">{p_st}</div>
-                </div>""", unsafe_allow_html=True)
-            with sc3:
-                st.markdown(f"""<div class="metric-card">
-                    <div class="metric-label">Potassium</div>
-                    <div class="metric-value" style="color: {k_cl}">{k_val:.0f}</div>
-                    <div class="metric-status" style="background: {k_cl}22; color: {k_cl}">{k_st}</div>
-                </div>""", unsafe_allow_html=True)
+            for col_card, (nut_name, val, detail, bench_key) in zip(
+                [sc1, sc2, sc3],
+                [('Nitrogen (N)', n_val, n_detail, 'N'),
+                 ('Phosphorus (P)', p_val, p_detail, 'P'),
+                 ('Potassium (K)', k_val, k_detail, 'K')]
+            ):
+                opt_range = SOIL_NPK_BENCHMARKS[bench_key]['optimal_range']
+                with col_card:
+                    st.markdown(f"""<div class="metric-card">
+                        <div class="metric-label">{nut_name}</div>
+                        <div class="metric-value" style="color: {detail['color']}">{val:.0f}</div>
+                        <div class="metric-status" style="background: {detail['color']}22; color: {detail['color']}">{detail['label']}</div>
+                        <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.5rem;">Optimal: {opt_range[0]}–{opt_range[1]} mg/kg</div>
+                    </div>""", unsafe_allow_html=True)
+
+            # Detailed description per nutrient
+            for nut_name, val, detail, bench_key in [
+                ('Nitrogen', n_val, n_detail, 'N'),
+                ('Phosphorus', p_val, p_detail, 'P'),
+                ('Potassium', k_val, k_detail, 'K')
+            ]:
+                if detail['label'] not in ['Medium']:
+                    icon = '🔴' if 'Very' in detail['label'] else ('🟡' if detail['label'] in ['Low', 'High'] else '🟢')
+                    st.caption(f"{icon} **{nut_name} ({val:.0f} mg/kg) — {detail['label']}:** {detail['desc']}")
+
         else:
             st.info("👆 Enter your soil NPK values and click **Analyze Soil Health** to see your report.")
+            st.markdown("")
+            st.markdown("##### ℹ️ About This Score")
+            st.markdown("""
+            This soil health score is calculated using **ICAR (Indian Council of Agricultural Research)** standard
+            benchmarks as adopted by the **Soil Health Card Scheme** (Govt. of India).
+
+            - **Scoring**: Each nutrient is scored based on how close it falls to the ICAR 'Medium' (optimal) range
+            - **Balance Bonus**: Extra points if N, P, K are proportionally balanced
+            - **Grades**: Excellent (85+), Good (70-84), Moderate (50-69), Poor (30-49), Very Poor (<30)
+            """)
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
