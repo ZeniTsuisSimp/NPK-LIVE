@@ -839,40 +839,85 @@ def page_crop_prediction(model_data):
                 })
 
                 emoji = CROP_NUTRIENT_IMPACT.get(predicted_crop, {}).get('emoji', '🌱')
-                st.success(f"### {emoji} Recommended: **{predicted_crop}**")
+                st.success(f"### {emoji} Best Match: **{predicted_crop}**")
 
-                # Top 3 with progress bars
-                sorted_probs = sorted(probabilities.items(), key=lambda x: x[1], reverse=True)[:5]
+                # ── Compute independent suitability scores (0-100 each) ──
+                def crop_suitability(n, p, k, crop_name):
+                    """Compute a 0-100 suitability score for a specific crop."""
+                    if crop_name not in CROP_REQUIREMENTS:
+                        return 0
+                    req = CROP_REQUIREMENTS[crop_name]
+
+                    def nutrient_fit(value, opt_low, opt_high):
+                        if opt_low <= value <= opt_high:
+                            return 100.0
+                        opt_width = opt_high - opt_low
+                        tolerance = max(opt_width * 0.3, 10)
+                        if value < opt_low:
+                            deficit = opt_low - value
+                            if deficit <= tolerance:
+                                return max(70, 100 - (deficit / tolerance) * 30)
+                            else:
+                                return max(0, 70 - ((deficit - tolerance) / max(opt_low, 1)) * 100)
+                        else:
+                            excess = value - opt_high
+                            if excess <= tolerance:
+                                return max(70, 100 - (excess / tolerance) * 30)
+                            else:
+                                return max(0, 70 - ((excess - tolerance) / max(opt_high, 1)) * 100)
+
+                    s_n = nutrient_fit(n, req['N'][0], req['N'][1])
+                    s_p = nutrient_fit(p, req['P'][0], req['P'][1])
+                    s_k = nutrient_fit(k, req['K'][0], req['K'][1])
+                    return round(0.35 * s_n + 0.30 * s_p + 0.35 * s_k, 1)
+
+                # Score all crops independently
+                suitability = {}
+                for crop_name in CROP_REQUIREMENTS:
+                    suitability[crop_name] = crop_suitability(nitrogen, phosphorus, potassium, crop_name)
+
+                sorted_scores = sorted(suitability.items(), key=lambda x: x[1], reverse=True)
+
+                # Top 5 with individual scores out of 100
+                st.markdown("##### 🏆 Crop Suitability Scores (each out of 100)")
                 medals = ["🥇", "🥈", "🥉", "4️⃣", "5️⃣"]
-                for i, (crop, prob) in enumerate(sorted_probs):
-                    conf = prob * 100
-                    st.markdown(f"{medals[i]} **{crop}** — {conf:.1f}%")
-                    st.progress(prob)
+                for i, (crop, score) in enumerate(sorted_scores[:5]):
+                    crop_emoji = CROP_NUTRIENT_IMPACT.get(crop, {}).get('emoji', '🌱')
+                    bar_color = '#22c55e' if score >= 80 else ('#84cc16' if score >= 60 else ('#f59e0b' if score >= 40 else '#ef4444'))
+                    st.markdown(f"{medals[i]} {crop_emoji} **{crop}** — **{score}/100**")
+                    st.progress(score / 100)
 
-                # Probability chart
-                prob_df = pd.DataFrame(list(probabilities.items()), columns=['Crop', 'Probability'])
-                prob_df['Probability'] = prob_df['Probability'] * 100
-                prob_df = prob_df.sort_values('Probability', ascending=True)
-                fig = px.bar(prob_df, x='Probability', y='Crop', orientation='h',
-                             color='Probability', color_continuous_scale='Emrld',
-                             title="All Crop Confidence Scores (%)")
+                # Full chart — all crops with independent scores
+                score_df = pd.DataFrame(sorted_scores, columns=['Crop', 'Suitability'])
+                score_df = score_df.sort_values('Suitability', ascending=True)
+                fig = px.bar(score_df, x='Suitability', y='Crop', orientation='h',
+                             color='Suitability', color_continuous_scale='Emrld',
+                             title="All Crop Suitability Scores (out of 100)",
+                             range_x=[0, 100])
                 fig.update_layout(
                     height=350, showlegend=False,
-                    xaxis_title="Confidence (%)", yaxis_title="",
+                    xaxis_title="Suitability Score (0–100)", yaxis_title="",
                     plot_bgcolor='rgba(0,0,0,0)', paper_bgcolor='rgba(0,0,0,0)',
                     font=dict(color='#94a3b8')
                 )
                 st.plotly_chart(fig, use_container_width=True, key="prediction_confidence_chart", config={'responsive': True, 'displayModeBar': False})
 
-                # Comparison with optimal
-                if predicted_crop in CROP_REQUIREMENTS:
-                    req = CROP_REQUIREMENTS[predicted_crop]
-                    st.markdown("##### Soil vs Optimal Requirements")
+                # Comparison with optimal for best crop
+                best_crop = sorted_scores[0][0]
+                if best_crop in CROP_REQUIREMENTS:
+                    req = CROP_REQUIREMENTS[best_crop]
+                    best_emoji = CROP_NUTRIENT_IMPACT.get(best_crop, {}).get('emoji', '🌱')
+                    st.markdown(f"##### {best_emoji} Your Soil vs {best_crop} Requirements")
                     comp = pd.DataFrame({
                         'Nutrient': ['N', 'P', 'K'],
                         'Your Soil': [nitrogen, phosphorus, potassium],
                         'Optimal Min': [req['N'][0], req['P'][0], req['K'][0]],
                         'Optimal Max': [req['N'][1], req['P'][1], req['K'][1]],
+                        'Status': [
+                            '✅ Optimal' if req['N'][0] <= nitrogen <= req['N'][1] else ('⬇️ Low' if nitrogen < req['N'][0] else '⬆️ High'),
+                            '✅ Optimal' if req['P'][0] <= phosphorus <= req['P'][1] else ('⬇️ Low' if phosphorus < req['P'][0] else '⬆️ High'),
+                            '✅ Optimal' if req['K'][0] <= potassium <= req['K'][1] else ('⬇️ Low' if potassium < req['K'][0] else '⬆️ High'),
+                        ]
                     })
                     st.dataframe(comp, use_container_width=True, hide_index=True)
         else:
