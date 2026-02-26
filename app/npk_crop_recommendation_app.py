@@ -819,33 +819,6 @@ def page_crop_prediction(model_data):
             potassium = st.number_input("Potassium (K) — mg/kg", value=80.0, min_value=0.0, max_value=250.0, step=1.0, help="Typical: 40–200 mg/kg")
             predict_btn = st.form_submit_button("🔍 Analyze & Recommend", use_container_width=True)
 
-        # Nutrient status cards
-        n_status, n_color = get_nutrient_status(nitrogen, 'N')
-        p_status, p_color = get_nutrient_status(phosphorus, 'P')
-        k_status, k_color = get_nutrient_status(potassium, 'K')
-
-        mc1, mc2, mc3 = st.columns(3)
-        with mc1:
-            st.markdown(f"""
-            <div class="metric-card">
-                <div class="metric-label">Nitrogen (N)</div>
-                <div class="metric-value" style="color: {n_color}">{nitrogen:.0f}</div>
-                <div class="metric-status" style="background: {n_color}22; color: {n_color}">{n_status}</div>
-            </div>""", unsafe_allow_html=True)
-        with mc2:
-            st.markdown(f"""
-            <div class="metric-card">
-                <div class="metric-label">Phosphorus (P)</div>
-                <div class="metric-value" style="color: {p_color}">{phosphorus:.0f}</div>
-                <div class="metric-status" style="background: {p_color}22; color: {p_color}">{p_status}</div>
-            </div>""", unsafe_allow_html=True)
-        with mc3:
-            st.markdown(f"""
-            <div class="metric-card">
-                <div class="metric-label">Potassium (K)</div>
-                <div class="metric-value" style="color: {k_color}">{potassium:.0f}</div>
-                <div class="metric-status" style="background: {k_color}22; color: {k_color}">{k_status}</div>
-            </div>""", unsafe_allow_html=True)
 
     with col_result:
         st.markdown("##### 🌱 Prediction Results")
