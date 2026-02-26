@@ -305,49 +305,53 @@ ROTATION_RULES = {
 
 # ─── Rapid NPK Reduction Methods (< 1 week) ─────────────────────────────────
 # Methods to quickly lower soil nutrient levels before planting a target crop
+# Written in simple farmer-friendly language
 NPK_REDUCTION_METHODS = {
     'N': {
         'name': 'Nitrogen (N)',
         'icon': '🟢',
         'methods': [
             {
-                'title': 'Heavy Irrigation / Leaching',
+                'title': '🚿 Heavy Watering (Leaching)',
                 'time': '2–4 days',
                 'effect': 'High',
-                'description': 'Flood-irrigate the field thoroughly. Nitrate-N is water-soluble and leaches quickly below the root zone with heavy watering.',
+                'description': 'Give your field a very heavy watering — like flooding it. Extra nitrogen dissolves in water and sinks deep down below where roots can reach it. This is called "leaching".',
+                'what_is': '💧 **What is leaching?** Think of it like a tea stain on a cloth — when you pour water over it, the stain washes away. Similarly, when you flood your soil with water, the extra nitrogen gets "washed" deep down below the roots where your crop can\'t absorb it.',
                 'steps': [
-                    'Apply 3–4 inches of water over 2 days',
-                    'Allow drainage for 24 hours',
-                    'Repeat irrigation once more',
-                    'Can reduce N by 15–30 mg/kg'
+                    'Flood the field with 3–4 inches of water over 2 days',
+                    'Let the water drain out completely for 24 hours',
+                    'Repeat the heavy watering once more',
+                    'This can reduce N by 15–30 mg/kg'
                 ],
-                'caution': 'Avoid on waterlogged soils. May leach other nutrients too.'
+                'caution': 'Avoid on clay or waterlogged soils. Other nutrients may also wash away.'
             },
             {
-                'title': 'Incorporate High-Carbon Mulch',
+                'title': '🌿 Mix in Dry Straw or Sawdust (Carbon Mulching)',
                 'time': '3–7 days',
                 'effect': 'Medium–High',
-                'description': 'Mix dry carbon-rich material (sawdust, straw, wood chips) into topsoil. Microbes use excess N to decompose carbon, immobilizing it.',
+                'description': 'Mix dry straw, sawdust, or wood chips into your topsoil. The tiny living organisms (bacteria) in your soil will eat these dry materials, and to digest them, they use up the extra nitrogen from the soil.',
+                'what_is': '🦠 **How does this work?** Your soil is full of tiny bacteria. When you mix in dry straw or sawdust, these bacteria need nitrogen as "food" to break down the dry material. They eat up the extra nitrogen from the soil — so nitrogen goes down naturally!',
                 'steps': [
-                    'Spread 2–3 inches of dry straw or sawdust over field',
-                    'Till lightly into top 6 inches of soil',
-                    'Keep soil moist to accelerate microbial activity',
+                    'Spread 2–3 inches of dry straw or sawdust over the field',
+                    'Till it lightly into the top 6 inches of soil',
+                    'Keep the soil moist so the bacteria stay active',
                     'Can lock up 10–25 mg/kg of N in 3–5 days'
                 ],
-                'caution': 'Don\'t overdo — excessive C:N ratio can starve the next crop temporarily.'
+                'caution': 'Don\'t add too much — it can temporarily starve the next crop of nitrogen for a few days.'
             },
             {
-                'title': 'Plant Fast-Growing N-Absorbing Cover',
+                'title': '🌾 Sow Fast-Growing Grass (Cover Cropping)',
                 'time': '5–7 days',
                 'effect': 'Medium',
-                'description': 'Sow fast-germinating grasses like rye, oats, or millet. They rapidly absorb available N from the soil.',
+                'description': 'Sow fast-growing grass seeds like oats, rye, or millet. These plants grow very quickly and drink up extra nitrogen from the soil through their roots.',
+                'what_is': '🧽 **Think of it like a sponge.** Just like a sponge soaks up spilled water, these fast-growing grasses soak up extra nitrogen from the soil through their roots. After 5–7 days, you cut the grass and remove it from the field — taking the nitrogen with it!',
                 'steps': [
-                    'Broadcast seeds densely (2× normal rate)',
-                    'Water immediately and keep moist',
-                    'After 5–7 days, cut and remove the green biomass',
-                    'Removes 8–15 mg/kg of N'
+                    'Broadcast seeds densely — 2× the normal seeding rate',
+                    'Water immediately and keep the soil moist',
+                    'After 5–7 days, cut the grass and remove it from the field (do NOT mix it back into the soil)',
+                    'This removes 8–15 mg/kg of N'
                 ],
-                'caution': 'Must remove biomass, not till it back in.'
+                'caution': 'You must remove the cut grass from the field — if you till it back in, the nitrogen will return to the soil!'
             }
         ]
     },
@@ -356,43 +360,46 @@ NPK_REDUCTION_METHODS = {
         'icon': '🔵',
         'methods': [
             {
-                'title': 'Aluminium Sulphate / Iron Sulphate Application',
+                'title': '⚗️ Aluminium Sulphate / Iron Sulphate (Chemical Binding)',
                 'time': '1–3 days',
                 'effect': 'High',
-                'description': 'These bind with excess phosphorus, making it unavailable. Effectively "locks" P in the soil within hours.',
+                'description': 'When you mix aluminium sulphate or iron sulphate into your soil, they grab onto the extra phosphorus and "lock" it up — the phosphorus stays in the soil but your plants can no longer absorb it.',
+                'what_is': '🔒 **How does this work?** Think of how iron rusts — iron grabs oxygen from the air and holds it tight. Similarly, iron/aluminium in the soil grabs phosphorus and holds it so tightly that plant roots can\'t pull it away. The available P goes down!',
                 'steps': [
-                    'Apply aluminium sulphate at 2–4 kg per 100 m²',
-                    'Mix into top 4–6 inches of soil',
-                    'Water lightly to activate reaction',
+                    'Apply 2–4 kg of aluminium sulphate per 100 sq meters',
+                    'Mix it well into the top 4–6 inches of soil',
+                    'Water lightly to start the chemical reaction',
                     'Can reduce available P by 10–20 mg/kg'
                 ],
-                'caution': 'Lowers soil pH slightly. Test pH after application.'
+                'caution': 'May make soil slightly acidic. Test the pH after application.'
             },
             {
-                'title': 'Heavy Organic Matter + Iron-Rich Soil Amendment',
+                'title': '🧱 Add Iron-Rich Red Soil (Laterite)',
                 'time': '3–5 days',
                 'effect': 'Medium',
-                'description': 'Add iron-rich amendments (laterite soil, red earth) mixed with compost. Iron binds phosphorus naturally.',
+                'description': 'Add iron-rich red soil (laterite) to your field. The iron in red soil naturally grabs phosphorus and holds it tight. This is a natural method — no chemicals needed. Mix it with some raw compost for best results.',
+                'what_is': '🧲 **Think of it like a magnet.** The iron in red soil acts like a magnet for phosphorus — it pulls phosphorus towards itself and holds it tight, so your plants can\'t absorb the excess.',
                 'steps': [
-                    'Spread 1–2 inches of iron-rich soil/laterite',
-                    'Mix with equal volume of raw compost',
-                    'Till into top 6 inches',
+                    'Spread 1–2 inches of iron-rich red soil or laterite',
+                    'Mix with an equal amount of raw compost',
+                    'Till into the top 6 inches of soil',
                     'Reduces available P by 5–15 mg/kg'
                 ],
-                'caution': 'More gradual than chemical methods. Best for moderate excess.'
+                'caution': 'Slower than chemical methods. Best for moderate excess.'
             },
             {
-                'title': 'Surface Soil Removal (Topsoil Scraping)',
+                'title': '🚜 Remove the Top Layer of Soil (Topsoil Scraping)',
                 'time': '1–2 days',
                 'effect': 'High',
-                'description': 'Physically remove the top 2–3 inches of P-enriched soil. P accumulates at the surface due to low mobility.',
+                'description': 'Phosphorus mostly sits in the top 2–3 inches of soil because it doesn\'t dissolve in water and doesn\'t move down. So simply scraping off the top layer of soil and replacing it is the most direct way to reduce phosphorus.',
+                'what_is': '📐 **Why does this work?** Unlike nitrogen, phosphorus does NOT dissolve in water — so it stays stuck in the top layer of soil. Remove the top 2–3 inches = phosphorus is gone!',
                 'steps': [
-                    'Scrape top 2–3 inches of topsoil with machinery',
-                    'Relocate scraped soil to a less fertile area',
+                    'Use a tractor or machinery to scrape off the top 2–3 inches of soil',
+                    'Move the scraped soil to a less fertile area of your farm',
                     'Replace with low-P subsoil or fresh compost',
-                    'Can remove 15–30 mg/kg of P instantly'
+                    'Instantly removes 15–30 mg/kg of P'
                 ],
-                'caution': 'Labor-intensive. May remove beneficial organic matter.'
+                'caution': 'Labor-intensive. You may also remove beneficial organic matter along with the topsoil.'
             }
         ]
     },
@@ -401,43 +408,46 @@ NPK_REDUCTION_METHODS = {
         'icon': '🟠',
         'methods': [
             {
-                'title': 'Heavy Irrigation / Leaching',
+                'title': '🚿 Heavy Watering (Leaching)',
                 'time': '2–4 days',
                 'effect': 'Medium–High',
-                'description': 'Potassium is moderately soluble. Heavy watering can flush K from sandy/loamy soils, though less effective in clay soils.',
+                'description': 'Potassium partly dissolves in water. If your soil is sandy or loamy, heavy watering will flush potassium down below the root zone. This works less well on heavy clay soils because clay holds potassium tightly.',
+                'what_is': '💧 **Why does soil type matter?** Sandy soil has big gaps between particles — water (and potassium) flows through easily. Clay soil has tiny, sticky particles that grab potassium and don\'t let go, even when you add lots of water.',
                 'steps': [
                     'Apply 4–5 inches of water over 2–3 days',
-                    'Ensure good drainage to carry K below root zone',
-                    'More effective in sandy or loamy soils',
+                    'Ensure good drainage so the water carries K below the root zone',
+                    'Works best in sandy or loamy soils',
                     'Can reduce K by 10–20 mg/kg in light soils'
                 ],
-                'caution': 'Less effective in heavy clay soils (K binds to clay particles).'
+                'caution': 'Less effective in heavy clay soils — potassium sticks to clay particles.'
             },
             {
-                'title': 'Gypsum (Calcium Sulphate) Application',
+                'title': '⚪ Gypsum (Calcium Sulphate) Application',
                 'time': '2–5 days',
                 'effect': 'Medium',
-                'description': 'Gypsum displaces K from exchange sites with calcium. The freed K then leaches with irrigation water.',
+                'description': 'Gypsum contains calcium, which takes potassium\'s place in the soil. Once potassium is displaced, it washes away with irrigation water.',
+                'what_is': '🪑 **Think of it like a chair.** Potassium is sitting in a "chair" in the soil (called an exchange site). When you add gypsum, calcium comes and pushes potassium out of the chair. Without a chair, potassium has nothing to hold onto and washes away with water.',
                 'steps': [
-                    'Apply gypsum at 3–5 kg per 100 m²',
-                    'Incorporate into top 6 inches of soil',
-                    'Follow with heavy irrigation (3+ inches)',
+                    'Apply 3–5 kg of gypsum per 100 sq meters',
+                    'Mix into the top 6 inches of soil',
+                    'Follow with heavy irrigation (3+ inches of water)',
                     'Can reduce K by 10–15 mg/kg'
                 ],
-                'caution': 'May temporarily increase EC (salinity). Test after application.'
+                'caution': 'May temporarily increase soil salinity. Test after application.'
             },
             {
-                'title': 'Plant K-Hungry Fast Crops',
+                'title': '🥬 Plant Fast-Growing Vegetables (K-Hungry Crops)',
                 'time': '5–7 days',
                 'effect': 'Medium',
-                'description': 'Sow fast-growing crops that absorb potassium heavily — radish, mustard greens, or turnips germinate in 3–4 days.',
+                'description': 'Radish, mustard greens, and turnips are fast-growing vegetables that are very "hungry" for potassium. They germinate in just 3–4 days and quickly absorb potassium from the soil through their roots.',
+                'what_is': '🌱 **Think of it this way:** These vegetables are "potassium-hungry" — they drink up potassium from the soil very quickly. Grow them densely for a week, then harvest and remove all the plants — the potassium leaves with them!',
                 'steps': [
-                    'Sow radish or mustard at 3× normal density',
+                    'Sow radish or mustard seeds at 3× the normal density',
                     'Water generously for rapid germination',
-                    'After 5–7 days, harvest and remove all biomass',
+                    'After 5–7 days, harvest and remove ALL the plants from the field',
                     'Can absorb 8–15 mg/kg of K'
                 ],
-                'caution': 'Must remove biomass completely. Dense sowing uses more seed.'
+                'caution': 'You must remove all the harvested plants completely. Dense sowing uses more seed.'
             }
         ]
     }
@@ -445,36 +455,36 @@ NPK_REDUCTION_METHODS = {
 
 # Crop-specific reduction tips — extra advice tailored per crop
 CROP_REDUCTION_TIPS = {
-    'Rice':      {'N': 'Rice paddy flooding naturally leaches excess N. Drain and refill 2–3 times.',
-                  'P': 'Add iron-rich laterite soil to paddy bed — common in rice farming areas.',
-                  'K': 'Flood and drain cycles in paddy effectively reduce K in light soils.'},
-    'Wheat':     {'N': 'Quick pre-sowing leaching is ideal for wheat. Irrigate heavily 5 days before sowing.',
-                  'P': 'Apply gypsum — it also improves wheat root zone structure.',
-                  'K': 'Wheat tolerates moderate K excess. Focus on reducing only if >30 mg/kg above optimal.'},
-    'Corn':      {'N': 'Corn is a heavy N feeder — slight excess is tolerable. Reduce only if >40 mg/kg above target.',
-                  'P': 'Incorporate sawdust + iron sulphate mix before planting corn.',
-                  'K': 'Corn uses K efficiently. Mild excess may not need correction.'},
-    'Barley':    {'N': 'Barley is sensitive to high N (causes lodging). Leach aggressively if N is high.',
-                  'P': 'Barley tolerates moderate P. Apply aluminium sulphate only if heavily excess.',
-                  'K': 'Barley needs balanced K. Leach if excess is >20 mg/kg above optimal.'},
-    'Soybean':   {'N': 'Soybean fixes its own N — excess soil N inhibits nodulation. Critical to reduce N before sowing!',
-                  'P': 'Moderate P excess helps soybean. Only reduce if >40 mg/kg above target.',
-                  'K': 'Soybean is a heavy K feeder — excess K is generally beneficial.'},
-    'Cotton':    {'N': 'Excess N in cotton causes excessive vegetative growth. Reduce N to prevent poor boll formation.',
-                  'P': 'Cotton responds well to P. Reduce only extreme excess (>50 mg/kg above target).',
+    'Rice':      {'N': 'Rice paddy flooding naturally washes away excess N. Drain and refill the paddy 2–3 times.',
+                  'P': 'Add iron-rich red soil (laterite) to the paddy bed — commonly available in rice-growing areas.',
+                  'K': 'The flood-and-drain cycle in paddy fields also helps reduce K in lighter soils.'},
+    'Wheat':     {'N': 'Irrigate heavily 5 days before sowing wheat — the nitrogen will wash down below the root zone.',
+                  'P': 'Apply gypsum — it also improves root zone structure for wheat.',
+                  'K': 'Wheat tolerates moderate K excess. Only take action if K is more than 30 mg/kg above optimal.'},
+    'Corn':      {'N': 'Corn is a heavy nitrogen feeder — slight excess is tolerable. Only reduce if more than 40 mg/kg above target.',
+                  'P': 'Mix sawdust + iron sulphate into the soil before planting corn.',
+                  'K': 'Corn uses potassium efficiently. Mild excess may not need correction.'},
+    'Barley':    {'N': '⚠️ Barley is very sensitive to high nitrogen — it causes the crop to fall over (lodging)! Reduce N aggressively if it is high.',
+                  'P': 'Barley tolerates moderate P excess. Apply aluminium sulphate only if P is heavily in excess.',
+                  'K': 'Barley needs balanced K. Wash out with heavy watering if excess is more than 20 mg/kg above optimal.'},
+    'Soybean':   {'N': '⚠️ Soybean makes its own nitrogen through its roots! Excess soil nitrogen stops this natural process. It is critical to reduce N before sowing soybean!',
+                  'P': 'Moderate P excess actually helps soybean. Only reduce if more than 40 mg/kg above target.',
+                  'K': 'Soybean needs a lot of K — excess K is generally beneficial. No need to reduce.'},
+    'Cotton':    {'N': '⚠️ Excess nitrogen in cotton causes lots of leaves but poor boll (cotton ball) formation! Reduce N before planting.',
+                  'P': 'Cotton responds well to P. Only reduce extreme excess (more than 50 mg/kg above target).',
                   'K': 'Cotton needs high K for fiber quality. Only reduce extreme K excess.'},
-    'Sugarcane': {'N': 'Sugarcane is a very heavy N feeder. Unless excess is extreme (>60 mg/kg), no reduction needed.',
-                  'P': 'Apply iron-rich amendments near the root zone of sugarcane sets.',
-                  'K': 'Sugarcane needs high K for sucrose content. Reduce only if >50 mg/kg above optimal.'},
-    'Tomato':    {'N': 'Excess N in tomato causes all foliage, no fruit! Critical to reduce before transplanting.',
-                  'P': 'Tomato loves P. Reduce only extreme excess.',
-                  'K': 'High K improves tomato fruit quality. Reduce only if >60 mg/kg above target.'},
-    'Potato':    {'N': 'Excess N delays tuber formation in potato. Leach N 4–5 days before planting.',
+    'Sugarcane': {'N': 'Sugarcane is a very heavy nitrogen feeder. Unless excess is extreme (more than 60 mg/kg), no reduction is needed.',
+                  'P': 'Apply iron-rich soil amendments near the root zone of sugarcane sets.',
+                  'K': 'Sugarcane needs high K for sugar content. Only reduce if more than 50 mg/kg above optimal.'},
+    'Tomato':    {'N': '⚠️ Excess nitrogen in tomato causes heavy leaf growth but NO fruit! It is critical to reduce N before transplanting!',
+                  'P': 'Tomato loves phosphorus. Only reduce extreme excess.',
+                  'K': 'High K actually improves tomato fruit quality. Only reduce if more than 60 mg/kg above target.'},
+    'Potato':    {'N': 'Excess N delays tuber (potato) formation. Wash out nitrogen with heavy watering 4–5 days before planting.',
                   'P': 'Potato benefits from high P. Only reduce extreme excess.',
-                  'K': 'Potato is a heavy K user. Excess K is generally well-tolerated.'},
-    'Onion':     {'N': 'Excess N makes onion bulbs soft and rot-prone. Reduce N before transplanting!',
-                  'P': 'Onion tolerates moderate P excess. Reduce only if heavily excessive.',
-                  'K': 'Onion uses moderate K. Leach if >25 mg/kg above optimal.'},
+                  'K': 'Potato is a heavy K user. Moderate excess is generally well-tolerated.'},
+    'Onion':     {'N': '⚠️ Excess nitrogen makes onion bulbs soft and prone to rotting! Reduce N before transplanting!',
+                  'P': 'Onion tolerates moderate P excess. Only reduce if heavily excessive.',
+                  'K': 'Onion needs moderate K. Wash out with heavy watering if more than 25 mg/kg above optimal.'},
 }
 
 
@@ -858,11 +868,9 @@ def page_npk_additions(model_data):
                      ('P', diffs['P'], targets['P']),
                      ('K', diffs['K'], targets['K'])]):
                     if diff < -5:
-                        # Excess — current is much higher than target
                         color = "#ef4444"
                         label = f"⬆️ Excess: {abs(diff)} mg/kg"
                     elif diff < 0:
-                        # Slightly over but close enough
                         color = "#f59e0b"
                         label = f"⬆️ Slight excess"
                     elif diff == 0:
@@ -899,85 +907,111 @@ def page_npk_additions(model_data):
                 })
                 st.dataframe(table, use_container_width=True, hide_index=True)
 
-                # ── Rapid NPK Reduction Methods (if nutrients are in excess) ──
-                has_excess = any(d < -5 for d in diffs.values())
-                if has_excess:
-                    st.markdown("---")
-                    st.markdown('<div class="section-header">⚡ Rapid NPK Reduction Plan (< 1 Week)</div>', unsafe_allow_html=True)
-                    st.markdown(f"Your soil has **excess nutrients** for **{target_crop}**. Here are fast-acting methods to bring levels down before planting:")
-
-                    # Generate crop-specific reduction plan
-                    reduction_plan = get_reduction_plan(cur_n, cur_p, cur_k, target_crop, targets)
-
-                    for item in reduction_plan:
-                        severity_color = '#ef4444' if item['severity'] == 'high' else ('#f59e0b' if item['severity'] == 'moderate' else '#84cc16')
-                        severity_label = item['severity'].upper()
-
-                        st.markdown(f"""
-                        <div class="info-card" style="border-left: 4px solid {severity_color}; margin-bottom: 1.5rem;">
-                            <h4>{item['icon']} {item['name']} — Excess: {item['excess']:.0f} mg/kg
-                                <span class="metric-status" style="background: {severity_color}22; color: {severity_color}; margin-left: 0.75rem;">{severity_label}</span>
-                            </h4>
-                        </div>""", unsafe_allow_html=True)
-
-                        # Crop-specific tip
-                        if item['crop_tip']:
-                            st.info(f"🎯 **{target_crop}-specific tip:** {item['crop_tip']}")
-
-                        # Show methods in expanders
-                        for method in item['methods']:
-                            effect_color = '#22c55e' if method['effect'] == 'High' else ('#f59e0b' if 'Medium' in method['effect'] else '#94a3b8')
-                            with st.expander(f"⏱️ {method['title']}  —  {method['time']}  |  Effectiveness: {method['effect']}"):
-                                st.markdown(f"**{method['description']}**")
-                                st.markdown("")
-                                st.markdown("**Steps:**")
-                                for i, step in enumerate(method['steps'], 1):
-                                    st.markdown(f"{i}. {step}")
-                                st.warning(f"⚠️ **Caution:** {method['caution']}")
-
-                        st.markdown('<div class="custom-divider"></div>', unsafe_allow_html=True)
-
-                    # Summary table of all excess nutrients
-                    st.markdown("##### 📊 Reduction Summary")
-                    summary_data = []
-                    for item in reduction_plan:
-                        best_method = item['methods'][0]
-                        summary_data.append({
-                            'Nutrient': f"{item['icon']} {item['name']}",
-                            'Excess (mg/kg)': f"+{item['excess']:.0f}",
-                            'Severity': item['severity'].capitalize(),
-                            'Fastest Method': best_method['title'],
-                            'Time Needed': best_method['time'],
-                        })
-                    if summary_data:
-                        st.dataframe(pd.DataFrame(summary_data), use_container_width=True, hide_index=True)
-
-                    st.markdown("")
-                    st.markdown("##### 💡 Alternative: Grow a crop that matches your soil")
-                    st.caption("If reducing nutrients isn't practical, consider a crop that thrives with your current NPK levels:")
-
-                    if model_data:
-                        best_crop, probs = predict_crop(cur_n, cur_p, cur_k, model_data)
-                        sorted_probs = sorted(probs.items(), key=lambda x: x[1], reverse=True)[:3]
-                        sc1, sc2, sc3 = st.columns(3)
-                        for i, (col, (crop, prob)) in enumerate(zip([sc1, sc2, sc3], sorted_probs)):
-                            medal = ["🥇", "🥈", "🥉"][i]
-                            crop_emoji = CROP_NUTRIENT_IMPACT.get(crop, {}).get('emoji', '🌱')
-                            conf = prob * 100
-                            border = "#22c55e" if i == 0 else "#84cc16" if i == 1 else "#64748b"
-                            with col:
-                                st.markdown(f"""
-                                <div class="rotation-step" style="border-color: {border}">
-                                    <div style="font-size: 1.8rem;">{medal} {crop_emoji}</div>
-                                    <div class="rotation-crop">{crop}</div>
-                                    <div style="color: {border}; font-weight: 700; font-size: 1.1rem; margin-top: 0.5rem;">{conf:.1f}% match</div>
-                                </div>""", unsafe_allow_html=True)
-                        st.info(f"🌱 **Best match for your soil (N={cur_n}, P={cur_p}, K={cur_k}): {best_crop}** — consider growing this instead!")
-
+                # Store results in session state for full-width rendering below
+                st.session_state['_npk_add_result'] = {
+                    'diffs': diffs, 'targets': targets, 'target_crop': target_crop,
+                    'cur_n': cur_n, 'cur_p': cur_p, 'cur_k': cur_k
+                }
                 st.markdown("---")
                 st.caption("💡 Values are approximate mg/kg adjustments. Actual application rates depend on soil depth, bulk density, and local conditions. Consult an agronomist for precise guidance.")
         else:
             st.info("👆 Select a target crop, enter your current soil values, and click **Calculate Additions**.")
+
+    # ════════════════════════════════════════════════════════════════════════════
+    # FULL-WIDTH SECTION: Rapid NPK Reduction Plan (rendered outside columns)
+    # ════════════════════════════════════════════════════════════════════════════
+    if '_npk_add_result' in st.session_state:
+        result = st.session_state['_npk_add_result']
+        diffs = result['diffs']
+        targets = result['targets']
+        target_crop = result['target_crop']
+        cur_n, cur_p, cur_k = result['cur_n'], result['cur_p'], result['cur_k']
+
+        has_excess = any(d < -5 for d in diffs.values())
+        if has_excess:
+            st.markdown('<div class="custom-divider"></div>', unsafe_allow_html=True)
+            st.markdown('<div class="section-header">⚡ Rapid NPK Reduction Plan — Under 1 Week!</div>', unsafe_allow_html=True)
+
+            emoji = CROP_NUTRIENT_IMPACT.get(target_crop, {}).get('emoji', '🌱')
+            st.markdown(f"""
+            Your soil has **excess nutrients** for **{emoji} {target_crop}**.
+            Follow the methods below — **your soil can be corrected within 1 week before sowing**.
+            """)
+
+            # Generate crop-specific reduction plan
+            reduction_plan = get_reduction_plan(cur_n, cur_p, cur_k, target_crop, targets)
+
+            for item in reduction_plan:
+                severity_color = '#ef4444' if item['severity'] == 'high' else ('#f59e0b' if item['severity'] == 'moderate' else '#84cc16')
+                severity_label = {'high': '🔴 VERY HIGH', 'moderate': '🟡 MODERATE', 'mild': '🟢 MILD'}[item['severity']]
+
+                st.markdown(f"""
+                <div class="info-card" style="border-left: 4px solid {severity_color}; margin-bottom: 1rem;">
+                    <h4>{item['icon']} {item['name']} — Extra: {item['excess']:.0f} mg/kg
+                        <span class="metric-status" style="background: {severity_color}22; color: {severity_color}; margin-left: 0.75rem;">{severity_label}</span>
+                    </h4>
+                </div>""", unsafe_allow_html=True)
+
+                # Crop-specific tip
+                if item['crop_tip']:
+                    st.info(f"🎯 **{target_crop}-specific tip:** {item['crop_tip']}")
+
+                # Show methods in two-column layout (explanation left, steps right)
+                for m in item['methods']:
+                    with st.expander(f"⏱️ {m['title']}  —  {m['time']}  |  Effectiveness: {m['effect']}", expanded=False):
+                        left_col, right_col = st.columns([1, 1], gap="large")
+                        with left_col:
+                            st.markdown("##### 📖 What to do & why?")
+                            st.markdown(m['description'])
+                            if 'what_is' in m:
+                                st.markdown("")
+                                st.markdown(m['what_is'])
+                        with right_col:
+                            st.markdown("##### 📝 Step-by-Step Instructions")
+                            for idx, step in enumerate(m['steps'], 1):
+                                st.markdown(f"**{idx}.** {step}")
+                            st.markdown("")
+                            st.warning(f"⚠️ **Caution:** {m['caution']}")
+
+                st.markdown('<div class="custom-divider"></div>', unsafe_allow_html=True)
+
+            # ── Summary table ──
+            st.markdown("##### 📊 Reduction Summary")
+            summary_data = []
+            for item in reduction_plan:
+                best_method = item['methods'][0]
+                summary_data.append({
+                    'Nutrient': f"{item['icon']} {item['name']}",
+                    'Excess (mg/kg)': f"+{item['excess']:.0f}",
+                    'Severity': {'high': '🔴 Very High', 'moderate': '🟡 Moderate', 'mild': '🟢 Mild'}[item['severity']],
+                    'Fastest Method': best_method['title'],
+                    'Time Needed': best_method['time'],
+                })
+            if summary_data:
+                st.dataframe(pd.DataFrame(summary_data), use_container_width=True, hide_index=True)
+
+            # ── Alternative: grow a matching crop instead ──
+            st.markdown("")
+            st.markdown("##### 💡 Alternative: Grow a crop that matches your soil")
+            st.caption("If reducing nutrients isn't practical, consider growing a crop that thrives with your current NPK levels:")
+
+            if model_data:
+                best_crop, probs = predict_crop(cur_n, cur_p, cur_k, model_data)
+                sorted_probs = sorted(probs.items(), key=lambda x: x[1], reverse=True)[:3]
+                sc1, sc2, sc3 = st.columns(3)
+                for i, (col_alt, (crop, prob)) in enumerate(zip([sc1, sc2, sc3], sorted_probs)):
+                    medal = ["🥇", "🥈", "🥉"][i]
+                    crop_emoji = CROP_NUTRIENT_IMPACT.get(crop, {}).get('emoji', '🌱')
+                    conf = prob * 100
+                    border = "#22c55e" if i == 0 else "#84cc16" if i == 1 else "#64748b"
+                    with col_alt:
+                        st.markdown(f"""
+                        <div class="rotation-step" style="border-color: {border}">
+                            <div style="font-size: 1.8rem;">{medal} {crop_emoji}</div>
+                            <div class="rotation-crop">{crop}</div>
+                            <div style="color: {border}; font-weight: 700; font-size: 1.1rem; margin-top: 0.5rem;">{conf:.1f}% match</div>
+                        </div>""", unsafe_allow_html=True)
+                st.info(f"🌱 **Best match for your soil (N={cur_n}, P={cur_p}, K={cur_k}): {best_crop}** — consider growing this instead!")
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
